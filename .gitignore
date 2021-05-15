@@ -1,0 +1,10 @@
+.idea
+*.iml
+target
+*.iws
+out/
+### OSX ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride

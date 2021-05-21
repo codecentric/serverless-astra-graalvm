@@ -12,6 +12,11 @@ terraform {
       source = "datastax/astra"
       version = "0.0.3-pre"
     }
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
+    }
   }
+
 }
 

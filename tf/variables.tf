@@ -11,3 +11,7 @@ variable "astra_db_client_secret" {
 variable "astra_db_client_token" {
   description = "Database user client token for Astra. Needs to have permissions to R/W on keyspaces."
 }
+
+variable "aws_profile" {
+  description = "AWS profile to use for AWS provider. See https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html."
+}

@@ -10,7 +10,10 @@
 
 ```bash
 gotf -m tf login
-echo 'astra_client_token = "AstraCS:xxxxxxxx' > tf/secrets.auto.tfvars
+echo 'astra_client_token = "AstraCS:ZZZ' > tf/secrets.auto.tfvars
+echo 'astra_db_client_id = "XXX"' >> tf/secrets.auto.tfvars
+echo 'astra_db_client_secret = "YYY"' >> tf/secrets.auto.tfvars
+echo 'astra_db_client_token = "AstraCS:ZZZ"' >> tf/secrets.auto.tfvars
 gotf -m tf init
 ```
 

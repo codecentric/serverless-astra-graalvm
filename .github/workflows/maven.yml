@@ -22,4 +22,4 @@ jobs:
         graalvm-version: 21.1.0
         native-image: true
     - name: Build with Maven
-      run: ./mvnw package
+      run: ./mvnw -B package

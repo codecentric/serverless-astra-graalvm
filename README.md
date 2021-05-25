@@ -18,7 +18,7 @@
 ### Prerequisites
 
 - [gotf](https://github.com/craftypath/gotf)
-- Built artifacts
+- Packaged artifacts
 
 ### Initialization
 

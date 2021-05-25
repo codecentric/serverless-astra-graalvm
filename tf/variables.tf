@@ -15,3 +15,8 @@ variable "astra_db_client_token" {
 variable "aws_profile" {
   description = "AWS profile to use for AWS provider. See https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html."
 }
+
+variable "project_name" {
+  description = "Project name used to name and tag resources."
+  default = "serverless-astra-graalvm"
+}

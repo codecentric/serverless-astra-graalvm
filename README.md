@@ -42,3 +42,10 @@ gotf -m tf apply
 ```bash
 gotf -m tf destroy
 ```
+
+## Usage
+
+```
+aws lambda invoke --function-name serverless-astra-graalvm response.json
+```
+

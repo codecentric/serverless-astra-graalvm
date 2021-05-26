@@ -20,6 +20,32 @@
 - [gotf](https://github.com/craftypath/gotf)
 - Packaged artifacts
 
+### AWS IAM permissions
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreatePolicy",
+                "iam:CreateRole",
+                "iam:TagRole",
+                "iam:AttachRolePolicy",
+                "iam:ListEntitiesForPolicy",
+                "iam:DetachRolePolicy",
+                "iam:ListInstanceProfilesForRole",
+                "iam:ListPolicyVersions",
+                "iam:DeletePolicy",
+                "iam:DeleteRole"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
 ### Initialization
 
 ```bash

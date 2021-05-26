@@ -18,7 +18,33 @@
 ### Prerequisites
 
 - [gotf](https://github.com/craftypath/gotf)
-- Built artifacts
+- Packaged artifacts
+
+### AWS IAM permissions
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreatePolicy",
+                "iam:CreateRole",
+                "iam:TagRole",
+                "iam:AttachRolePolicy",
+                "iam:ListEntitiesForPolicy",
+                "iam:DetachRolePolicy",
+                "iam:ListInstanceProfilesForRole",
+                "iam:ListPolicyVersions",
+                "iam:DeletePolicy",
+                "iam:DeleteRole"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
 
 ### Initialization
 
@@ -42,3 +68,10 @@ gotf -m tf apply
 ```bash
 gotf -m tf destroy
 ```
+
+## Usage
+
+```
+aws lambda invoke --function-name serverless-astra-graalvm response.json
+```
+

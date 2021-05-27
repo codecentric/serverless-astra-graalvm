@@ -82,6 +82,6 @@ gotf -m tf destroy
 ## Usage
 
 ```
-aws lambda invoke --function-name serverless-astra-graalvm response.json
+aws lambda invoke --function-name serverless-astra-graalvm --log-type Tail --payload "{}" response.json
 ```
 

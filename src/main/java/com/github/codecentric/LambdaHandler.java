@@ -7,8 +7,6 @@ public class LambdaHandler implements RequestHandler<LambdaRequest, LambdaRespon
 
   @Override
   public LambdaResponse handleRequest(LambdaRequest input, Context context) {
-    LambdaResponse response = new LambdaResponse();
-    response.statusCode = 200;
-    return response;
+    return new LambdaResponse();
   }
 }

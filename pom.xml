@@ -89,8 +89,11 @@
           <imageName>serverless-astra-graalvm</imageName>
           <mainClass>com.formkiq.lambda.runtime.graalvm.LambdaRuntime</mainClass>
           <buildArgs>
-            --no-fallback
-            --enable-url-protocols=http
+            <buildArg>--no-fallback</buildArg>
+            <buildArg>--enable-url-protocols=http</buildArg>
+            <buildArg>-H:ReflectionConfigurationFiles=../src/main/resources/reflect.json</buildArg>
+            <buildArg>-H:+ReportUnsupportedElementsAtRuntime</buildArg>
+            <buildArg>--no-server</buildArg>
           </buildArgs>
         </configuration>
       </plugin>

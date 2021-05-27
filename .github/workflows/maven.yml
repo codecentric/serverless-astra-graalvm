@@ -33,11 +33,11 @@ jobs:
       env: 
         GOTF_VERSION: 0.13.0
       run: |
-        wget https://github.com/craftypath/gotf/releases/download/v${GOTF_VERSION}/gotf_${GOTF_VERSION}_linux_amd64.tar.gz
+        wget --no-verbose https://github.com/craftypath/gotf/releases/download/v${GOTF_VERSION}/gotf_${GOTF_VERSION}_linux_amd64.tar.gz
         tar -xf gotf_${GOTF_VERSION}_linux_amd64.tar.gz
         chmod u+x gotf
         mkdir -p ~/.terraform.d
-        echo "$TFRC_CREDENTIALS_FILE" > ~/.terraform.d/credentials.tfrc.json
+        echo "${{ secrets.TFRC_CREDENTIALS_FILE }}" > ~/.terraform.d/credentials.tfrc.json
     - name: Terraform
       env:
         TF_VAR_astra_client_token: ${{ secrets.ASTRA_ADMIN_CLIENT_TOKEN }}

@@ -13,6 +13,8 @@
 ./mvnw package
 ```
 
+Note that for the Lambda deployment to work, you need to build a linux-amd64 native image. At this point in time, cross compilation doesn't seem to work so if you are on Mac or Windows, you might need a VM if you're planning to build this locally.
+
 ## Deployment
 
 ### Prerequisites

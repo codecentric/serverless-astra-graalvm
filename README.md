@@ -21,17 +21,20 @@ Note that for the Lambda deployment to work, you need to build a linux-amd64 nat
 
 - [gotf](https://github.com/craftypath/gotf)
 - Packaged artifacts
+- [DataStax Astra](https://astra.datastax.com) account + client API tokens
+- [AWS](https://portal.aws.amazon.com/) account + IAM user
 
-### AWS IAM permissions
+The Astra admin token should have permissions to create databases and keyspaces. Ideally you want a separate application token that can only access databases and keyspaces. At the point of writing this it was not possible to create the application token through Terraform. 
 
-Add these AWS managed policies to the permissions of your AWS user:
+The IAM user can use the following AWS managed policies:
 
-- AWSLambda_FullAccess
-- CloudWatchFullAccess
-- AmazonAPIGatewayAdministrator
-- AmazonSSMFullAccess
+- `AWSLambda_FullAccess`
+- `CloudWatchFullAccess`
+- `AmazonAPIGatewayAdministrator`
+- `AmazonSSMFullAccess`
 
-Add this inline policy to the permissinos of your AWS user to allow terraform the manipulation of IAM roles and policies.
+Also add this inline policy to allow the management of Lambda roles and policies:
+
 ```json
 {
     "Version": "2012-10-17",

@@ -22,6 +22,14 @@
 
 ### AWS IAM permissions
 
+Add these AWS managed policies to the permissions of your AWS user:
+
+- AWSLambda_FullAccess
+- CloudWatchFullAccess
+- AmazonAPIGatewayAdministrator
+- AmazonSSMFullAccess
+
+Add this inline policy to the permissinos of your AWS user to allow terraform the manipulation of IAM roles and policies.
 ```json
 {
     "Version": "2012-10-17",
@@ -29,16 +37,16 @@
         {
             "Effect": "Allow",
             "Action": [
+                "iam:AttachRolePolicy",
                 "iam:CreatePolicy",
                 "iam:CreateRole",
-                "iam:TagRole",
-                "iam:AttachRolePolicy",
-                "iam:ListEntitiesForPolicy",
+                "iam:DeletePolicy",
+                "iam:DeleteRole",
                 "iam:DetachRolePolicy",
+                "iam:ListEntitiesForPolicy",
                 "iam:ListInstanceProfilesForRole",
                 "iam:ListPolicyVersions",
-                "iam:DeletePolicy",
-                "iam:DeleteRole"
+                "iam:TagRole"
             ],
             "Resource": "*"
         }

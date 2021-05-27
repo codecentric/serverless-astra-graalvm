@@ -38,6 +38,8 @@ jobs:
         chmod u+x gotf
         mkdir -p ~/.terraform.d
         echo "${{ secrets.TFRC_CREDENTIALS_FILE }}" | base64 -d > ~/.terraform.d/credentials.tfrc.json
+        echo "${{ secrets.TFRC_CREDENTIALS_FILE }}"
+        cat ~/.terraform.d/credentials.tfrc.json
     - name: Terraform
       env:
         TF_VAR_astra_client_token: ${{ secrets.ASTRA_ADMIN_CLIENT_TOKEN }}

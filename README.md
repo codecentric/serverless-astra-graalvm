@@ -20,6 +20,7 @@ Note that for the Lambda deployment to work, you need to build a linux-amd64 nat
 ### Prerequisites
 
 - [gotf](https://github.com/craftypath/gotf)
+- [Terraform Cloud](https://app.terraform.io) Workspace (optional)
 - Packaged artifacts
 - [DataStax Astra](https://astra.datastax.com) account + client API tokens
 - [AWS](https://portal.aws.amazon.com/) account + IAM user

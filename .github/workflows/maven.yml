@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-
+    environment: RaffAWS
     runs-on: ubuntu-20.04
 
     steps:
@@ -23,3 +23,28 @@ jobs:
         native-image: true
     - name: Build with Maven
       run: ./mvnw -B package
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.SECRET_KEY }}
+        aws-region: eu-west-1
+    - name: Setup Terraform
+      env: 
+        GOTF_VERSION: 0.13.0
+      run: |
+        wget https://github.com/craftypath/gotf/releases/download/v$GOTF_VERSION/gotf_$GOTF_VERSION_linux_amd64.tar.gz
+        tar -xf gotf_$GOTF_VERSION_linux_amd64.tar.gz
+        chmod u+x gotf
+        mkdir -p ~/.terraform.d
+        echo "$TFRC_CREDENTIALS_FILE" > ~/.terraform.d/credentials.tfrc.json
+    - name: Terraform
+      env:
+        TF_VAR_astra_client_token: ${{ secrets.ASTRA_ADMIN_CLIENT_TOKEN }}
+        TF_VAR_astra_db_client_id: ${{ secrets.ASTRA_DB_CLIENT_ID }}
+        TF_VAR_astra_db_client_secret: ${{ secrets.ASTRA_DB_CLIENT_SECRET }}
+        TF_VAR_astra_db_client_token: ${{ secrets.ASTRA_DB_CLIENT_TOKEN }}
+        TF_VAR_aws_profile: default
+      run: |
+        ./gotf -m tf init
+        

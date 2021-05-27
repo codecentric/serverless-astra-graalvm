@@ -47,4 +47,5 @@ jobs:
         TF_VAR_aws_profile: default
       run: |
         ./gotf -m tf init
+        ./gotf -m tf apply --auto-approve
         

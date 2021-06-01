@@ -1,11 +1,14 @@
 package com.github.codecentric;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import com.google.gson.Gson;
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
+import java.util.Map;
+import org.apache.hc.client5.http.fluent.Request;
+import org.apache.hc.client5.http.fluent.Response;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.io.entity.HttpEntities;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -14,6 +17,8 @@ import org.testcontainers.utility.DockerImageName;
 
 @Testcontainers
 public class ApiTest {
+
+  private static final Gson gson = new Gson();
 
   @Container
   @SuppressWarnings("rawtypes")
@@ -26,17 +31,24 @@ public class ApiTest {
           .withEnv("SIMPLE_SNITCH", "true")
           .withEnv("ENABLE_AUTH", "true");
 
+  private String loadAuthToken() throws IOException {
+    Response response =
+        Request.post(
+                String.format(
+                    "http://%s:%d/v1/auth", stargate.getHost(), stargate.getMappedPort(8081)))
+            .body(
+                HttpEntities.create(
+                    "{\"username\":\"cassandra\", \"password\":\"cassandra\"}",
+                    ContentType.APPLICATION_JSON))
+            .execute();
+
+    return (String) gson.fromJson(response.returnContent().asString(), Map.class).get("authToken");
+  }
+
   @Test
-  public void testCassandra() throws IOException, InterruptedException {
-    HttpClient client = HttpClient.newHttpClient();
-    HttpRequest request =
-        HttpRequest.newBuilder(
-                URI.create(
-                    String.format(
-                        "http://%s:%d", stargate.getHost(), stargate.getMappedPort(8082))))
-            .header("accept", "application/json")
-            .build();
-    HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-    System.out.println(response.body());
+  public void shouldLoadAuthTokenFromStargate() throws IOException {
+    String authToken = loadAuthToken();
+
+    assertFalse(authToken.isBlank());
   }
 }

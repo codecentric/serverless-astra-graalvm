@@ -1,15 +1,22 @@
 package com.github.codecentric;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.io.entity.HttpEntities;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -18,7 +25,9 @@ import org.testcontainers.utility.DockerImageName;
 @Testcontainers
 public class ApiTest {
 
-  private static final Gson gson = new Gson();
+  private static final String namespace = "serverless";
+  private final ObjectMapper objectMapper = new ObjectMapper();
+  private final Logger log = LoggerFactory.getLogger(this.getClass());
 
   @Container
   @SuppressWarnings("rawtypes")
@@ -29,26 +38,47 @@ public class ApiTest {
           .withEnv("CLUSTER_VERSION", "4.0")
           .withEnv("DEVELOPER_MODE", "true")
           .withEnv("SIMPLE_SNITCH", "true")
-          .withEnv("ENABLE_AUTH", "true");
+          .withEnv("ENABLE_AUTH", "false");
 
-  private String loadAuthToken() throws IOException {
-    Response response =
-        Request.post(
-                String.format(
-                    "http://%s:%d/v1/auth", stargate.getHost(), stargate.getMappedPort(8081)))
-            .body(
-                HttpEntities.create(
-                    "{\"username\":\"cassandra\", \"password\":\"cassandra\"}",
-                    ContentType.APPLICATION_JSON))
-            .execute();
-
-    return (String) gson.fromJson(response.returnContent().asString(), Map.class).get("authToken");
+  private CassandraClient createCassandraClient() {
+    return new CassandraClient(
+        URI.create("http://localhost:" + stargate.getMappedPort(8082)),
+        getAuthToken(),
+        "serverless_astra_graalvm");
   }
 
   @Test
-  public void shouldLoadAuthTokenFromStargate() throws IOException {
-    String authToken = loadAuthToken();
+  public void shouldPersistOrder() throws IOException {
+    CassandraClient cassandraClient = createCassandraClient();
+    cassandraClient.ensureNamespaceExists();
 
-    assertFalse(authToken.isBlank());
+    Order order = new Order();
+    order.setProductName("Goggly Eyes");
+    order.setProductQuantity(27);
+    order.setProductPrice(99);
+
+    UUID orderId = cassandraClient.saveOrder(order);
+    order.setOrderId(orderId);
+    Optional<Order> result = cassandraClient.getOrder(orderId);
+
+    assertTrue(result.isPresent());
+    assertEquals(order, result.get());
+  }
+
+  public String getAuthToken() {
+    try {
+      Response response =
+          Request.post(String.format("http://localhost:%s/v1/auth", stargate.getMappedPort(8081)))
+              .body(
+                  HttpEntities.create(
+                      "{\"username\":\"cassandra\", \"password\":\"cassandra\"}",
+                      ContentType.APPLICATION_JSON))
+              .execute();
+      Map<String, String> authResult =
+          objectMapper.readValue(response.returnContent().asBytes(), new TypeReference<>() {});
+      return authResult.get("authToken");
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

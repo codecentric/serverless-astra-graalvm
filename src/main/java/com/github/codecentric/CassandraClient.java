@@ -13,8 +13,6 @@ import org.apache.hc.client5.http.fluent.Response;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.io.entity.HttpEntities;
 import org.apache.hc.core5.net.URIBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CassandraClient {
 
@@ -22,7 +20,6 @@ public class CassandraClient {
   private final String astraToken;
   private final String astraNamespace;
   private final ObjectMapper objectMapper = new ObjectMapper();
-  private final Logger log = LoggerFactory.getLogger(CassandraClient.class);
 
   public CassandraClient(URI astraUrl, String astraToken, String astraNamespace) {
     this.astraUrl = astraUrl;
@@ -75,7 +72,7 @@ public class CassandraClient {
             .execute();
 
     if (getNamespaceResponse.returnResponse().getCode() != 200) {
-      log.info("Namespace {} did not exist, creating...", astraNamespace);
+      System.out.printf("Namespace %s did not exist, creating...%n", astraNamespace);
       Response createResponse =
           Request.post(String.format("%s/v2/schemas/namespaces", astraUrl))
               .body(
@@ -86,12 +83,11 @@ public class CassandraClient {
               .execute();
       int creationReturnCode = createResponse.returnResponse().getCode();
       if (creationReturnCode != 201) {
-        log.error(
-            "Creation of namespace {} failed with error code {}.",
-            astraNamespace,
-            creationReturnCode);
+        System.out.printf(
+            "Creation of namespace %s failed with error code %s.%n",
+            astraNamespace, creationReturnCode);
       } else {
-        log.info("Namespace {} successfully created.", astraNamespace);
+        System.out.printf("Namespace %s successfully created.%n", astraNamespace);
       }
     }
   }

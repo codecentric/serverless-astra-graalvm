@@ -15,8 +15,6 @@ import org.apache.hc.client5.http.fluent.Response;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.io.entity.HttpEntities;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -26,7 +24,6 @@ import org.testcontainers.utility.DockerImageName;
 public class CassandraClientTest {
 
   private final ObjectMapper objectMapper = new ObjectMapper();
-  private final Logger log = LoggerFactory.getLogger(this.getClass());
 
   @Container
   @SuppressWarnings("rawtypes")

@@ -23,9 +23,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 @Testcontainers
-public class ApiTest {
+public class CassandraClientTest {
 
-  private static final String namespace = "serverless";
   private final ObjectMapper objectMapper = new ObjectMapper();
   private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -48,7 +47,7 @@ public class ApiTest {
   }
 
   @Test
-  public void shouldPersistOrder() throws IOException {
+  public void shouldPersistAndRetrieveOrder() throws IOException {
     CassandraClient cassandraClient = createCassandraClient();
     cassandraClient.ensureNamespaceExists();
 

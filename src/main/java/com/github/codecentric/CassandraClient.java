@@ -72,7 +72,7 @@ public class CassandraClient {
             .execute();
 
     if (getNamespaceResponse.returnResponse().getCode() != 200) {
-      System.out.printf("Namespace %s did not exist, creating...%n", astraNamespace);
+      System.out.printf("Namespace '%s' does not exist, creating...%n", astraNamespace);
       Response createResponse =
           Request.post(String.format("%s/v2/schemas/namespaces", astraUrl))
               .body(
@@ -84,10 +84,10 @@ public class CassandraClient {
       int creationReturnCode = createResponse.returnResponse().getCode();
       if (creationReturnCode != 201) {
         System.out.printf(
-            "Creation of namespace %s failed with error code %s.%n",
+            "Creation of namespace '%s' failed with error code %s.%n",
             astraNamespace, creationReturnCode);
       } else {
-        System.out.printf("Namespace %s successfully created.%n", astraNamespace);
+        System.out.printf("Namespace '%s' successfully created.%n", astraNamespace);
       }
     }
   }

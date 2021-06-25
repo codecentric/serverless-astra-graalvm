@@ -19,7 +19,14 @@ public class LambdaHandler implements RequestHandler<LambdaRequest, LambdaRespon
     try {
       client.saveOrder(input.getOrder());
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new RuntimeException(
+          "Could not save order '"
+              + input.getOrder()
+              + "' at "
+              + astraUrl
+              + " with namespace "
+              + astraNamespace,
+          e);
     }
     return new LambdaResponse();
   }

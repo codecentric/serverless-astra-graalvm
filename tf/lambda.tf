@@ -13,4 +13,10 @@ module "lambda_function" {
     Name = var.project_name
     Version = local.git-short-sha
   }
+
+  environment_variables = {
+    ASTRA_URL = "https://${astra_database.main.id}-${astra_database.main.region}.apps.astra.datastax.com/api/rest"
+    ASTRA_TOKEN = var.astra_db_client_token
+    ASTRA_NAMESPACE = astra_database.main.name
+  }
 }

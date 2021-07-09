@@ -5,8 +5,11 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import org.apache.commons.codec.binary.Base64;
+
 import java.io.IOException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 
 public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, LambdaResponse> {
 
@@ -25,7 +28,13 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
     Order order = new Order();
 
     try {
-      LambdaRequest request = mapper.readValue(input.getBody(), LambdaRequest.class);
+      byte[] decodedRequest;
+      if (input.getIsBase64Encoded()) {
+        decodedRequest = Base64.decodeBase64(input.getBody());
+      } else {
+        decodedRequest = input.getBody().getBytes(StandardCharsets.UTF_8);
+      }
+      LambdaRequest request = mapper.readValue(decodedRequest, LambdaRequest.class);
 
       client.saveOrder(request.getOrder());
     } catch (IOException e) {

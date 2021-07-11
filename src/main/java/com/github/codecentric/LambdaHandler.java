@@ -5,11 +5,10 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import org.apache.commons.codec.binary.Base64;
-
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import org.apache.commons.codec.binary.Base64;
 
 public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, LambdaResponse> {
 
@@ -26,6 +25,13 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
     String astraNamespace = System.getenv("ASTRA_NAMESPACE");
     CassandraClient client = new CassandraClient(URI.create(astraUrl), astraToken, astraNamespace);
     Order order = new Order();
+
+    if (astraUrl.isBlank()) System.out.println("Astra url is NOT set.");
+    if (astraToken.isBlank()) System.out.println("Astra token is NOT set.");
+    if (astraNamespace.isBlank()) System.out.println("Astra namespace is NOT set.");
+    System.out.println(input);
+    System.out.println("IsBase64Encoded " + input.getIsBase64Encoded());
+    System.out.println("Body " + input.getBody());
 
     try {
       byte[] decodedRequest;

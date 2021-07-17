@@ -24,15 +24,12 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
     String astraToken = System.getenv("ASTRA_TOKEN");
     String astraNamespace = System.getenv("ASTRA_NAMESPACE");
     CassandraClient client = new CassandraClient(URI.create(astraUrl), astraToken, astraNamespace);
-    Order order = new Order();
 
     if (astraUrl.isBlank()) System.out.println("Astra url is NOT set.");
     if (astraToken.isBlank()) System.out.println("Astra token is NOT set.");
     if (astraNamespace.isBlank()) System.out.println("Astra namespace is NOT set.");
-    System.out.println(input);
-    System.out.println("IsBase64Encoded " + input.getIsBase64Encoded());
-    System.out.println("Body " + input.getBody());
 
+    LambdaRequest request = null;
     try {
       byte[] decodedRequest;
       if (input.getIsBase64Encoded()) {
@@ -40,7 +37,8 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
       } else {
         decodedRequest = input.getBody().getBytes(StandardCharsets.UTF_8);
       }
-      LambdaRequest request = mapper.readValue(decodedRequest, LambdaRequest.class);
+
+      request = mapper.readValue(decodedRequest, LambdaRequest.class);
 
       client.saveOrder(request.getOrder());
     } catch (IOException e) {
@@ -48,7 +46,7 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
           "Could not save input '"
               + input
               + "' as order '"
-              + order
+              + request.getOrder()
               + "' at "
               + astraUrl
               + " with namespace "

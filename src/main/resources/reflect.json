@@ -30,5 +30,16 @@
     "allPublicClasses": true,
     "allDeclaredFields": true,
     "allPublicFields": true
+  },
+  {
+    "name": "com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent$RequestContext",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredClasses": true,
+    "allPublicClasses": true,
+    "allDeclaredFields": true,
+    "allPublicFields": true
   }
 ]

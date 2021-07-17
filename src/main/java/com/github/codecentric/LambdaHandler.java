@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import org.apache.commons.codec.binary.Base64;
 
 public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, LambdaResponse> {
@@ -40,7 +41,8 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
 
       request = mapper.readValue(decodedRequest, LambdaRequest.class);
 
-      client.saveOrder(request.getOrder());
+      UUID orderId = client.saveOrder(request.getOrder());
+      return new LambdaResponse(orderId);
     } catch (IOException e) {
       throw new RuntimeException(
           "Could not save input '"
@@ -53,6 +55,5 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
               + astraNamespace,
           e);
     }
-    return new LambdaResponse();
   }
 }

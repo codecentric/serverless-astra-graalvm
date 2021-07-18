@@ -45,17 +45,18 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
       return new LambdaResponse(order.get());
 
     } else {
-      LambdaRequest request = null;
+      Order requestOrder = null;
       try {
-        request = mapper.readValue(decodedRequest, LambdaRequest.class);
-        Order savedOrder = client.saveOrder(request.getOrder());
+        requestOrder = mapper.readValue(decodedRequest, Order.class);
+        System.out.println("Received order " + requestOrder);
+        Order savedOrder = client.saveOrder(requestOrder);
         return new LambdaResponse(savedOrder);
       } catch (IOException e) {
         throw new RuntimeException(
             "Could not save input '"
                 + input
                 + "' as order '"
-                + request
+                + requestOrder
                 + "' at "
                 + astraUrl
                 + " with namespace "

@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.UUID;
 import org.apache.commons.codec.binary.Base64;
 
 public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, LambdaResponse> {
@@ -30,30 +29,38 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
     if (astraToken.isBlank()) System.out.println("Astra token is NOT set.");
     if (astraNamespace.isBlank()) System.out.println("Astra namespace is NOT set.");
 
-    LambdaRequest request = null;
-    try {
-      byte[] decodedRequest;
-      if (input.getIsBase64Encoded()) {
-        decodedRequest = Base64.decodeBase64(input.getBody());
-      } else {
-        decodedRequest = input.getBody().getBytes(StandardCharsets.UTF_8);
-      }
+    System.out.println("input = " + input + ", context = " + context);
 
+    byte[] decodedRequest = base64DecodeApiGatewayEvent(input);
+    LambdaRequest request = null;
+
+    try {
       request = mapper.readValue(decodedRequest, LambdaRequest.class);
 
-      UUID orderId = client.saveOrder(request.getOrder());
-      return new LambdaResponse(orderId);
+      Order savedOrder = client.saveOrder(request.getOrder());
+
+      return new LambdaResponse(savedOrder);
     } catch (IOException e) {
       throw new RuntimeException(
           "Could not save input '"
               + input
               + "' as order '"
-              + request.getOrder()
+              + request
               + "' at "
               + astraUrl
               + " with namespace "
               + astraNamespace,
           e);
     }
+  }
+
+  private byte[] base64DecodeApiGatewayEvent(APIGatewayV2HTTPEvent input) {
+    byte[] decodedRequest;
+    if (input.getIsBase64Encoded()) {
+      decodedRequest = Base64.decodeBase64(input.getBody());
+    } else {
+      decodedRequest = input.getBody().getBytes(StandardCharsets.UTF_8);
+    }
+    return decodedRequest;
   }
 }

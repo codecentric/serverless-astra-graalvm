@@ -1,12 +1,42 @@
 package com.github.codecentric;
 
-import java.util.UUID;
+import java.util.Objects;
 
 public class LambdaResponse {
 
-  UUID orderId;
+  private Order order;
 
-  public LambdaResponse(UUID orderId) {
-    this.orderId = orderId;
+  public LambdaResponse(Order order) {
+    this.order = order;
+  }
+
+  public Order getOrder() {
+    return order;
+  }
+
+  public void setOrder(Order order) {
+    this.order = order;
+  }
+
+  @Override
+  public String toString() {
+    return "LambdaResponse{" + "order=" + order + '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    LambdaResponse that = (LambdaResponse) o;
+    return Objects.equals(order, that.order);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(order);
   }
 }

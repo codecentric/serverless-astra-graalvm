@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
 import org.apache.hc.core5.http.ContentType;
@@ -53,9 +52,8 @@ public class CassandraClientTest {
     order.setProductQuantity(27);
     order.setProductPrice(99);
 
-    UUID orderId = cassandraClient.saveOrder(order);
-    order.setOrderId(orderId);
-    Optional<Order> result = cassandraClient.getOrder(orderId);
+    Order savedOrder = cassandraClient.saveOrder(order);
+    Optional<Order> result = cassandraClient.getOrder(savedOrder.getOrderId());
 
     assertTrue(result.isPresent());
     assertEquals(order, result.get());

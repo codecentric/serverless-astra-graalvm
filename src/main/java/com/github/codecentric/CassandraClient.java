@@ -50,7 +50,7 @@ public class CassandraClient {
     }
   }
 
-  public UUID saveOrder(Order order) throws IOException {
+  public Order saveOrder(Order order) throws IOException {
     Response response =
         Request.post(
                 String.format("%s/v2/namespaces/%s/collections/orders", astraUrl, astraNamespace))
@@ -62,7 +62,9 @@ public class CassandraClient {
 
     Map<String, String> saveResult =
         objectMapper.readValue(response.returnContent().asBytes(), new TypeReference<>() {});
-    return UUID.fromString(saveResult.get("documentId"));
+    UUID orderId = UUID.fromString(saveResult.get("documentId"));
+    order.setOrderId(orderId);
+    return order;
   }
 
   public void ensureNamespaceExists() throws IOException {

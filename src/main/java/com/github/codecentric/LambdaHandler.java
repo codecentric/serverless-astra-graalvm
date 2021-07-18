@@ -71,7 +71,8 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
     if (input.getIsBase64Encoded()) {
       decodedRequest = Base64.decodeBase64(input.getBody());
     } else {
-      decodedRequest = input.getBody().getBytes(StandardCharsets.UTF_8);
+      String body = input.getBody();
+      decodedRequest = body != null ? body.getBytes(StandardCharsets.UTF_8) : null;
     }
     return decodedRequest;
   }

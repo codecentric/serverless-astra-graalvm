@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+import java.util.UUID;
 import org.apache.commons.codec.binary.Base64;
 
 public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, LambdaResponse> {
@@ -32,25 +34,34 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
     System.out.println("input = " + input + ", context = " + context);
 
     byte[] decodedRequest = base64DecodeApiGatewayEvent(input);
-    LambdaRequest request = null;
 
-    try {
-      request = mapper.readValue(decodedRequest, LambdaRequest.class);
+    if (input.getRouteKey().startsWith("GET")) {
+      String orderIdRaw = input.getPathParameters().get("orderId");
+      UUID orderId = UUID.fromString(orderIdRaw);
+      Optional<Order> order = client.getOrder(orderId);
+      if (order.isEmpty()) {
+        return new LambdaResponse();
+      }
+      return new LambdaResponse(order.get());
 
-      Order savedOrder = client.saveOrder(request.getOrder());
-
-      return new LambdaResponse(savedOrder);
-    } catch (IOException e) {
-      throw new RuntimeException(
-          "Could not save input '"
-              + input
-              + "' as order '"
-              + request
-              + "' at "
-              + astraUrl
-              + " with namespace "
-              + astraNamespace,
-          e);
+    } else {
+      LambdaRequest request = null;
+      try {
+        request = mapper.readValue(decodedRequest, LambdaRequest.class);
+        Order savedOrder = client.saveOrder(request.getOrder());
+        return new LambdaResponse(savedOrder);
+      } catch (IOException e) {
+        throw new RuntimeException(
+            "Could not save input '"
+                + input
+                + "' as order '"
+                + request
+                + "' at "
+                + astraUrl
+                + " with namespace "
+                + astraNamespace,
+            e);
+      }
     }
   }
 

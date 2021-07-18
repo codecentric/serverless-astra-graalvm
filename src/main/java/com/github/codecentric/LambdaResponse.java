@@ -6,6 +6,8 @@ public class LambdaResponse {
 
   private Order order;
 
+  public LambdaResponse() {}
+
   public LambdaResponse(Order order) {
     this.order = order;
   }

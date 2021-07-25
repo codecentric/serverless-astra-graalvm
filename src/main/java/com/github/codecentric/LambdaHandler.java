@@ -48,9 +48,11 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
       Order requestOrder = null;
       try {
         requestOrder = mapper.readValue(decodedRequest, Order.class);
-        System.out.println("Received order " + requestOrder);
+        System.out.println("Received order: " + requestOrder);
         Order savedOrder = client.saveOrder(requestOrder);
-        return new LambdaResponse(savedOrder);
+        LambdaResponse lambdaResponse = new LambdaResponse(savedOrder);
+        System.out.println("Lambda response: " + lambdaResponse);
+        return lambdaResponse;
       } catch (IOException e) {
         throw new RuntimeException(
             "Could not save input '"

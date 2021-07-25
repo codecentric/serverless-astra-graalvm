@@ -30,11 +30,8 @@ public class CassandraClient {
   public Optional<Order> getOrder(UUID orderId) {
     try {
       URI getOrderUri =
-          new URIBuilder()
-              .setScheme(astraUrl.getScheme())
-              .setHost(astraUrl.getHost())
-              .setPort(astraUrl.getPort())
-              .setPathSegments(
+          new URIBuilder(astraUrl)
+              .appendPathSegments(
                   "v2", "namespaces", astraNamespace, "collections", "orders", orderId.toString())
               .build();
       System.out.println("Requesting order from Astra at " + getOrderUri);

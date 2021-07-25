@@ -37,6 +37,7 @@ public class CassandraClient {
               .setPathSegments(
                   "v2", "namespaces", astraNamespace, "collections", "orders", orderId.toString())
               .build();
+      System.out.println("Requesting order from Astra at " + getOrderUri);
       Response response =
           Request.get(getOrderUri).addHeader("X-Cassandra-Token", astraToken).execute();
       CassandraOrder cassandraOrder =

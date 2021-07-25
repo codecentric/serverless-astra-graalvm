@@ -22,7 +22,7 @@ jobs:
         graalvm-version: 21.1.0
         native-image: true
     - name: Build with Maven
-      run: ./mvnw -B package -DskipTests=true
+      run: ./mvnw -B package
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -30,7 +30,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.SECRET_KEY }}
         aws-region: eu-west-1
     - name: Setup Terraform
-      env:
+      env: 
         GOTF_VERSION: 0.13.0
       run: |
         wget --no-verbose https://github.com/craftypath/gotf/releases/download/v${GOTF_VERSION}/gotf_${GOTF_VERSION}_linux_amd64.tar.gz

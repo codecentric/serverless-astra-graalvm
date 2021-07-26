@@ -29,6 +29,11 @@
     "allPublicFields": true
   },
   {
+    "name": "com.github.codecentric.CassandraOrder",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
     "name": "com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,

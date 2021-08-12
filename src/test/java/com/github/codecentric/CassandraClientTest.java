@@ -4,7 +4,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.net.URI;
@@ -23,7 +25,10 @@ import org.testcontainers.utility.DockerImageName;
 @Testcontainers
 public class CassandraClientTest {
 
-  private final Gson mapper = new Gson();
+  private final Gson mapper =
+      new GsonBuilder()
+          .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+          .create();
 
   @Container
   @SuppressWarnings("rawtypes")

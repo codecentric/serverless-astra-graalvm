@@ -5,7 +5,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
@@ -14,7 +16,10 @@ import org.apache.commons.codec.binary.Base64;
 
 public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, LambdaResponse> {
 
-  private static final Gson mapper = new Gson();
+  private static final Gson mapper =
+      new GsonBuilder()
+          .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+          .create();
 
   @Override
   public LambdaResponse handleRequest(APIGatewayV2HTTPEvent input, Context context) {

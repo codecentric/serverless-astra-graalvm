@@ -8,14 +8,8 @@
   },
   {
     "name": "com.github.codecentric.Order",
-    "allDeclaredConstructors": true,
     "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredClasses": true,
-    "allPublicClasses": true,
-    "allDeclaredFields": true,
-    "allPublicFields": true
+    "allDeclaredFields": true
   },
   {
     "name": "com.github.codecentric.LambdaResponse",
@@ -25,7 +19,7 @@
   {
     "name": "com.github.codecentric.CassandraOrder",
     "allPublicConstructors": true,
-    "allPublicMethods": true
+    "allDeclaredFields": true
   },
   {
     "name": "com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent",

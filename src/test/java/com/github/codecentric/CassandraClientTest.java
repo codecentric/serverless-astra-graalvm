@@ -1,10 +1,11 @@
 package com.github.codecentric;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
@@ -22,7 +23,7 @@ import org.testcontainers.utility.DockerImageName;
 @Testcontainers
 public class CassandraClientTest {
 
-  private final ObjectMapper objectMapper = new ObjectMapper();
+  private final Gson mapper = new Gson();
 
   @Container
   @SuppressWarnings("rawtypes")
@@ -69,7 +70,9 @@ public class CassandraClientTest {
                       ContentType.APPLICATION_JSON))
               .execute();
       Map<String, String> authResult =
-          objectMapper.readValue(response.returnContent().asBytes(), new TypeReference<>() {});
+          mapper.fromJson(
+              response.returnContent().asString(UTF_8),
+              new TypeToken<Map<String, String>>() {}.getType());
       return authResult.get("authToken");
     } catch (IOException e) {
       throw new RuntimeException(e);

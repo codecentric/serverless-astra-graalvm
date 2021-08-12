@@ -1,8 +1,11 @@
 package com.github.codecentric;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -19,7 +22,7 @@ public class CassandraClient {
   private final URI astraUrl;
   private final String astraToken;
   private final String astraNamespace;
-  private final ObjectMapper objectMapper = new ObjectMapper();
+  private final Gson mapper = new Gson();
 
   public CassandraClient(URI astraUrl, String astraToken, String astraNamespace) {
     this.astraUrl = astraUrl;
@@ -38,7 +41,7 @@ public class CassandraClient {
       Response response =
           Request.get(getOrderUri).addHeader("X-Cassandra-Token", astraToken).execute();
       CassandraOrder cassandraOrder =
-          objectMapper.readValue(response.returnContent().asBytes(), CassandraOrder.class);
+          mapper.fromJson(response.returnContent().asString(UTF_8), CassandraOrder.class);
       Order resultOrder = cassandraOrder.getData();
       resultOrder.setOrderId(cassandraOrder.getDocumentId());
       return Optional.of(cassandraOrder.getData());
@@ -53,13 +56,12 @@ public class CassandraClient {
         Request.post(
                 String.format("%s/v2/namespaces/%s/collections/orders", astraUrl, astraNamespace))
             .addHeader("X-Cassandra-Token", astraToken)
-            .body(
-                HttpEntities.create(
-                    objectMapper.writeValueAsString(order), ContentType.APPLICATION_JSON))
+            .body(HttpEntities.create(mapper.toJson(order), ContentType.APPLICATION_JSON))
             .execute();
 
+    Type type = new TypeToken<Map<String, String>>() {}.getType();
     Map<String, String> saveResult =
-        objectMapper.readValue(response.returnContent().asBytes(), new TypeReference<>() {});
+        mapper.fromJson(response.returnContent().asString(UTF_8), type);
     UUID orderId = UUID.fromString(saveResult.get("documentId"));
     order.setOrderId(orderId);
     return order;

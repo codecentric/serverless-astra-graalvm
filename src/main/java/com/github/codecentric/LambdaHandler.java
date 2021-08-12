@@ -3,22 +3,18 @@ package com.github.codecentric;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 import org.apache.commons.codec.binary.Base64;
 
 public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, LambdaResponse> {
 
-  private static final ObjectMapper mapper = new ObjectMapper();
-
-  public LambdaHandler() {
-    mapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-  }
+  private static final Gson mapper = new Gson();
 
   @Override
   public LambdaResponse handleRequest(APIGatewayV2HTTPEvent input, Context context) {
@@ -47,7 +43,7 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
     } else {
       Order requestOrder = null;
       try {
-        requestOrder = mapper.readValue(decodedRequest, Order.class);
+        requestOrder = mapper.fromJson(Arrays.toString(decodedRequest), Order.class);
         System.out.println("Received order: " + requestOrder);
         Order savedOrder = client.saveOrder(requestOrder);
         LambdaResponse lambdaResponse = new LambdaResponse(savedOrder);

@@ -1,13 +1,13 @@
 package com.github.codecentric;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 import org.apache.commons.codec.binary.Base64;
@@ -29,8 +29,6 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
 
     System.out.println("input = " + input + ", context = " + context);
 
-    byte[] decodedRequest = base64DecodeApiGatewayEvent(input);
-
     if (input.getRouteKey().startsWith("GET")) {
       String orderIdRaw = input.getPathParameters().get("orderId");
       UUID orderId = UUID.fromString(orderIdRaw);
@@ -43,7 +41,8 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
     } else {
       Order requestOrder = null;
       try {
-        requestOrder = mapper.fromJson(Arrays.toString(decodedRequest), Order.class);
+        byte[] decodedRequest = base64DecodeApiGatewayEvent(input);
+        requestOrder = mapper.fromJson(new String(decodedRequest), Order.class);
         System.out.println("Received order: " + requestOrder);
         Order savedOrder = client.saveOrder(requestOrder);
         LambdaResponse lambdaResponse = new LambdaResponse(savedOrder);
@@ -70,7 +69,7 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
       decodedRequest = Base64.decodeBase64(input.getBody());
     } else {
       String body = input.getBody();
-      decodedRequest = body != null ? body.getBytes(StandardCharsets.UTF_8) : null;
+      decodedRequest = body != null ? body.getBytes(UTF_8) : null;
     }
     return decodedRequest;
   }

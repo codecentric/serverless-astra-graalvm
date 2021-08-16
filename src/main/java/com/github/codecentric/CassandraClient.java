@@ -2,9 +2,7 @@ package com.github.codecentric;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -24,10 +22,7 @@ public class CassandraClient {
   private final URI astraUrl;
   private final String astraToken;
   private final String astraNamespace;
-  private final Gson mapper =
-      new GsonBuilder()
-          .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-          .create();
+  private final Gson mapper = new Gson();
 
   public CassandraClient(URI astraUrl, String astraToken, String astraNamespace) {
     this.astraUrl = astraUrl;

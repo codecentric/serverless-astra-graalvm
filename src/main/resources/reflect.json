@@ -1,9 +1,7 @@
 [
   {
     "name": "com.github.codecentric.LambdaHandler",
-    "allDeclaredConstructors": true,
     "allPublicConstructors": true,
-    "allDeclaredMethods": true,
     "allPublicMethods": true
   },
   {

@@ -21,7 +21,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 @Testcontainers
-public class CassandraClientTest {
+public class AstraClientTest {
 
   private final Gson mapper = new Gson();
 
@@ -36,8 +36,8 @@ public class CassandraClientTest {
           .withEnv("SIMPLE_SNITCH", "true")
           .withEnv("ENABLE_AUTH", "false");
 
-  private CassandraClient createCassandraClient() {
-    return new CassandraClient(
+  private AstraClient createAstraClient() {
+    return new AstraClient(
         URI.create("http://localhost:" + stargate.getMappedPort(8082)),
         getAuthToken(),
         "serverless_astra_graalvm");
@@ -45,16 +45,16 @@ public class CassandraClientTest {
 
   @Test
   public void shouldPersistAndRetrieveOrder() throws IOException {
-    CassandraClient cassandraClient = createCassandraClient();
-    cassandraClient.ensureNamespaceExists();
+    AstraClient astraClient = createAstraClient();
+    astraClient.ensureNamespaceExists();
 
     Order order = new Order();
     order.setProductName("Goggly Eyes");
     order.setProductQuantity(27);
     order.setProductPrice(99);
 
-    Order savedOrder = cassandraClient.saveOrder(order);
-    Optional<Order> result = cassandraClient.getOrder(savedOrder.getOrderId());
+    Order savedOrder = astraClient.saveOrder(order);
+    Optional<Order> result = astraClient.getOrder(savedOrder.getOrderId());
 
     assertTrue(result.isPresent());
     assertEquals(order, result.get());

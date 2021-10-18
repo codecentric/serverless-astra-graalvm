@@ -2,7 +2,7 @@ package com.github.codecentric;
 
 import java.util.UUID;
 
-public class CassandraOrder {
+public class AstraOrder {
 
   private UUID documentId;
   private Order data;

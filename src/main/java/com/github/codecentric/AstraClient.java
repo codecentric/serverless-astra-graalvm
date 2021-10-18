@@ -17,14 +17,14 @@ import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.io.entity.HttpEntities;
 import org.apache.hc.core5.net.URIBuilder;
 
-public class CassandraClient {
+public class AstraClient {
 
   private final URI astraUrl;
   private final String astraToken;
   private final String astraNamespace;
   private final Gson mapper = new Gson();
 
-  public CassandraClient(URI astraUrl, String astraToken, String astraNamespace) {
+  public AstraClient(URI astraUrl, String astraToken, String astraNamespace) {
     this.astraUrl = astraUrl;
     this.astraToken = astraToken;
     this.astraNamespace = astraNamespace;
@@ -40,11 +40,11 @@ public class CassandraClient {
       System.out.println("Requesting order from Astra at " + getOrderUri);
       Response response =
           Request.get(getOrderUri).addHeader("X-Cassandra-Token", astraToken).execute();
-      CassandraOrder cassandraOrder =
-          mapper.fromJson(response.returnContent().asString(UTF_8), CassandraOrder.class);
-      Order resultOrder = cassandraOrder.getData();
-      resultOrder.setOrderId(cassandraOrder.getDocumentId());
-      return Optional.of(cassandraOrder.getData());
+      AstraOrder astraOrder =
+          mapper.fromJson(response.returnContent().asString(UTF_8), AstraOrder.class);
+      Order resultOrder = astraOrder.getData();
+      resultOrder.setOrderId(astraOrder.getDocumentId());
+      return Optional.of(astraOrder.getData());
     } catch (IOException | URISyntaxException e) {
       e.printStackTrace();
       return Optional.empty();

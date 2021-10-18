@@ -21,7 +21,7 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
     String astraUrl = System.getenv("ASTRA_URL");
     String astraToken = System.getenv("ASTRA_TOKEN");
     String astraNamespace = System.getenv("ASTRA_NAMESPACE");
-    CassandraClient client = new CassandraClient(URI.create(astraUrl), astraToken, astraNamespace);
+    AstraClient client = new AstraClient(URI.create(astraUrl), astraToken, astraNamespace);
 
     if (astraUrl.isBlank()) System.out.println("Astra url is NOT set.");
     if (astraToken.isBlank()) System.out.println("Astra token is NOT set.");

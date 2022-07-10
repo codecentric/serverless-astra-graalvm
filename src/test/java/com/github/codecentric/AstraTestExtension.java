@@ -35,10 +35,7 @@ public class AstraTestExtension implements BeforeEachCallback {
     astraUri = URI.create(String.format("http://%s:%s", stargate.getContainerIpAddress(),
         stargate.getMappedPort(8082)));
     authToken = getAuthToken();
-    client = new AstraClient(
-        astraUri,
-        authToken,
-        namespace);
+    client = new AstraClient(astraUri, authToken, namespace);
     ensureNamespaceExists();
   }
 

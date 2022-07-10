@@ -59,7 +59,8 @@ public class AstraClient {
             .body(HttpEntities.create(mapper.toJson(order), ContentType.APPLICATION_JSON))
             .execute();
 
-    Type type = new TypeToken<Map<String, String>>() {}.getType();
+    Type type = new TypeToken<Map<String, String>>() {
+    }.getType();
     Map<String, String> saveResult =
         mapper.fromJson(response.returnContent().asString(UTF_8), type);
     UUID orderId = UUID.fromString(saveResult.get("documentId"));
@@ -67,30 +68,4 @@ public class AstraClient {
     return order;
   }
 
-  public void ensureNamespaceExists() throws IOException {
-    Response getNamespaceResponse =
-        Request.get(String.format("%s/v2/schemas/namespaces/%s", astraUrl, astraNamespace))
-            .addHeader("X-Cassandra-Token", astraToken)
-            .execute();
-
-    if (getNamespaceResponse.returnResponse().getCode() != 200) {
-      System.out.printf("Namespace '%s' does not exist, creating...%n", astraNamespace);
-      Response createResponse =
-          Request.post(String.format("%s/v2/schemas/namespaces", astraUrl))
-              .body(
-                  HttpEntities.create(
-                      String.format("{\"name\":\"%s\"}", astraNamespace),
-                      ContentType.APPLICATION_JSON))
-              .addHeader("X-Cassandra-Token", astraToken)
-              .execute();
-      int creationReturnCode = createResponse.returnResponse().getCode();
-      if (creationReturnCode != 201) {
-        System.out.printf(
-            "Creation of namespace '%s' failed with error code %s.%n",
-            astraNamespace, creationReturnCode);
-      } else {
-        System.out.printf("Namespace '%s' successfully created.%n", astraNamespace);
-      }
-    }
-  }
 }

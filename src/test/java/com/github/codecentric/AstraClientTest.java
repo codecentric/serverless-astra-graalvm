@@ -38,7 +38,7 @@ public class AstraClientTest {
 
   private AstraClient createAstraClient() {
     return new AstraClient(
-        URI.create("http://localhost:" + stargate.getMappedPort(8082)),
+        URI.create(String.format("http://%s:%s", stargate.getContainerIpAddress(), stargate.getMappedPort(8082))),
         getAuthToken(),
         "serverless_astra_graalvm");
   }
@@ -63,7 +63,7 @@ public class AstraClientTest {
   public String getAuthToken() {
     try {
       Response response =
-          Request.post(String.format("http://localhost:%s/v1/auth", stargate.getMappedPort(8081)))
+          Request.post(String.format("http://%s:%s/v1/auth", stargate.getContainerIpAddress(), stargate.getMappedPort(8081)))
               .body(
                   HttpEntities.create(
                       "{\"username\":\"cassandra\", \"password\":\"cassandra\"}",

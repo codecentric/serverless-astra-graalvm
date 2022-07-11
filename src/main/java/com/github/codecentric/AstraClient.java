@@ -32,19 +32,18 @@ public class AstraClient {
 
   public Optional<Order> getOrder(UUID orderId) {
     try {
-      URI getOrderUri =
-          new URIBuilder(astraUrl)
-              .appendPathSegments(
-                  "v2", "namespaces", astraNamespace, "collections", "orders", orderId.toString())
-              .build();
-      System.out.println("Requesting order from Astra at " + getOrderUri);
-      Response response =
-          Request.get(getOrderUri).addHeader("X-Cassandra-Token", astraToken).execute();
-      AstraOrder astraOrder =
-          mapper.fromJson(response.returnContent().asString(UTF_8), AstraOrder.class);
-      Order resultOrder = astraOrder.getData();
-      resultOrder.setOrderId(astraOrder.getDocumentId());
-      return Optional.of(astraOrder.getData());
+      URI uri = new URIBuilder(astraUrl)
+          .appendPathSegments("v2", "namespaces", astraNamespace,
+              "collections", "orders", orderId.toString())
+          .build();
+      Response response = Request.get(uri)
+          .addHeader("X-Cassandra-Token", astraToken)
+          .execute();
+      OrderDocument orderDoc = mapper.fromJson(
+          response.returnContent().asString(UTF_8), OrderDocument.class);
+      Order resultOrder = orderDoc.getData();
+      resultOrder.setOrderId(orderDoc.getDocumentId());
+      return Optional.of(orderDoc.getData());
     } catch (IOException | URISyntaxException e) {
       e.printStackTrace();
       return Optional.empty();

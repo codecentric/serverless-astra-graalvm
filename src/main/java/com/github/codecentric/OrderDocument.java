@@ -2,7 +2,7 @@ package com.github.codecentric;
 
 import java.util.UUID;
 
-public class AstraOrder {
+public class OrderDocument {
 
   private UUID documentId;
   private Order data;

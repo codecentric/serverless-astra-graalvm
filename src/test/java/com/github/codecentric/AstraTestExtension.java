@@ -50,22 +50,16 @@ public class AstraTestExtension implements BeforeEachCallback {
     return client;
   }
 
-  public String generateAuthToken() {
-    try {
-      Response response =
-          Request.post(String.format("http://%s:%s/v1/auth",
-                  stargate.getContainerIpAddress(), stargate.getMappedPort(8081)))
-              .body(HttpEntities.create(
-                  "{\"username\":\"cassandra\", \"password\":\"cassandra\"}",
-                  ContentType.APPLICATION_JSON))
-              .execute();
-      AuthToken authResult =
-          mapper.fromJson(
-              response.returnContent().asString(UTF_8),
-              AuthToken.class);
-      return authResult.authToken;
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  public String generateAuthToken() throws IOException {
+    Response response =
+        Request.post(String.format("http://%s:%s/v1/auth",
+                stargate.getContainerIpAddress(), stargate.getMappedPort(8081)))
+            .body(HttpEntities.create(
+                "{\"username\":\"cassandra\", \"password\":\"cassandra\"}",
+                ContentType.APPLICATION_JSON))
+            .execute();
+    AuthToken authResult = mapper.fromJson(
+        response.returnContent().asString(UTF_8), AuthToken.class);
+    return authResult.authToken;
   }
 }

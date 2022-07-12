@@ -33,7 +33,7 @@ public class AstraClientTest {
     AstraClient astraClient = testExtension.getClient();
 
     Order order = new Order();
-    order.setProductName("Goggly Eyes");
+    order.setProductName("Googly Eyes");
     order.setProductQuantity(27);
     order.setProductPrice(99);
 

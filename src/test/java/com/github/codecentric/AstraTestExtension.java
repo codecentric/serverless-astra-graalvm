@@ -40,30 +40,12 @@ public class AstraTestExtension implements BeforeEachCallback {
   }
 
   public void ensureNamespaceExists() throws IOException {
-    Response getNamespaceResponse =
-        Request.get(String.format("%s/v2/schemas/namespaces/%s", astraUri, namespace))
-            .addHeader("X-Cassandra-Token", authToken)
-            .execute();
-
-    if (getNamespaceResponse.returnResponse().getCode() != 200) {
-      System.out.printf("Namespace '%s' does not exist, creating...%n", namespace);
-      Response createResponse =
-          Request.post(String.format("%s/v2/schemas/namespaces", astraUri))
-              .body(
-                  HttpEntities.create(
-                      String.format("{\"name\":\"%s\"}", namespace),
-                      ContentType.APPLICATION_JSON))
-              .addHeader("X-Cassandra-Token", authToken)
-              .execute();
-      int creationReturnCode = createResponse.returnResponse().getCode();
-      if (creationReturnCode != 201) {
-        System.out.printf(
-            "Creation of namespace '%s' failed with error code %s.%n",
-            namespace, creationReturnCode);
-      } else {
-        System.out.printf("Namespace '%s' successfully created.%n", namespace);
-      }
-    }
+    Request.post(String.format("%s/v2/schemas/namespaces", astraUri))
+        .body(HttpEntities.create(
+            String.format("{\"name\":\"%s\"}", namespace),
+            ContentType.APPLICATION_JSON))
+        .addHeader("X-Cassandra-Token", authToken)
+        .execute();
   }
 
   public AstraClient getClient() {

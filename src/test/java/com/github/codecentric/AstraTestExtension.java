@@ -32,8 +32,8 @@ public class AstraTestExtension implements BeforeEachCallback {
 
   @Override
   public void beforeEach(ExtensionContext extensionContext) throws Exception {
-    astraUri = URI.create(String.format("http://%s:%s", stargate.getContainerIpAddress(),
-        stargate.getMappedPort(8082)));
+    astraUri = URI.create(String.format("http://%s:%s",
+        stargate.getContainerIpAddress(), stargate.getMappedPort(8082)));
     authToken = generateAuthToken();
     client = new AstraClient(astraUri, authToken, namespace);
     ensureNamespaceExists();
@@ -73,12 +73,11 @@ public class AstraTestExtension implements BeforeEachCallback {
   public String generateAuthToken() {
     try {
       Response response =
-          Request.post(String.format("http://%s:%s/v1/auth", stargate.getContainerIpAddress(),
-                  stargate.getMappedPort(8081)))
-              .body(
-                  HttpEntities.create(
-                      "{\"username\":\"cassandra\", \"password\":\"cassandra\"}",
-                      ContentType.APPLICATION_JSON))
+          Request.post(String.format("http://%s:%s/v1/auth",
+                  stargate.getContainerIpAddress(), stargate.getMappedPort(8081)))
+              .body(HttpEntities.create(
+                  "{\"username\":\"cassandra\", \"password\":\"cassandra\"}",
+                  ContentType.APPLICATION_JSON))
               .execute();
       Map<String, String> authResult =
           mapper.fromJson(

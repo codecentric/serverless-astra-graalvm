@@ -3,10 +3,8 @@ package com.github.codecentric;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Map;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
 import org.apache.hc.core5.http.ContentType;
@@ -61,12 +59,11 @@ public class AstraTestExtension implements BeforeEachCallback {
                   "{\"username\":\"cassandra\", \"password\":\"cassandra\"}",
                   ContentType.APPLICATION_JSON))
               .execute();
-      Map<String, String> authResult =
+      AuthToken authResult =
           mapper.fromJson(
               response.returnContent().asString(UTF_8),
-              new TypeToken<Map<String, String>>() {
-              }.getType());
-      return authResult.get("authToken");
+              AuthToken.class);
+      return authResult.authToken;
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

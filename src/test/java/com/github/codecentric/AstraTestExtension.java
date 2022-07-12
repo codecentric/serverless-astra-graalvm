@@ -22,8 +22,8 @@ public class AstraTestExtension implements BeforeEachCallback {
   private final GenericContainer stargate;
   private final String namespace;
   private volatile AstraClient client;
-  private URI astraUri;
-  private String authToken;
+  private volatile URI astraUri;
+  private volatile String authToken;
 
   public AstraTestExtension(GenericContainer stargate, String namespace) {
     this.stargate = stargate;

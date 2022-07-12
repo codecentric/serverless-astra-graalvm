@@ -3,12 +3,9 @@ package com.github.codecentric;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import org.apache.hc.client5.http.fluent.Request;
@@ -57,13 +54,9 @@ public class AstraClient {
         .body(HttpEntities.create(mapper.toJson(order), ContentType.APPLICATION_JSON))
         .execute();
 
-    Type type = new TypeToken<Map<String, String>>() {
-    }.getType();
-    Map<String, String> saveResult =
-        mapper.fromJson(response.returnContent().asString(UTF_8), type);
-    UUID orderId = UUID.fromString(saveResult.get("documentId"));
-    order.setOrderId(orderId);
+    DocumentId documentId =
+        mapper.fromJson(response.returnContent().asString(UTF_8), DocumentId.class);
+    order.setOrderId(documentId.documentId);
     return order;
   }
-
 }

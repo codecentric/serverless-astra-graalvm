@@ -1,7 +1,6 @@
 package com.github.codecentric;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -41,8 +40,6 @@ public class AstraClientTest {
     Order savedOrder = astraClient.saveOrder(order);
     Optional<Order> result = astraClient.getOrder(savedOrder.getOrderId());
 
-    assertTrue(result.isPresent());
-    assertEquals(order, result.get());
+    assertThat(result).hasValue(order);
   }
-
 }

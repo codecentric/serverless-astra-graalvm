@@ -51,12 +51,11 @@ public class AstraClient {
   }
 
   public Order saveOrder(Order order) throws IOException {
-    Response response =
-        Request.post(
-                String.format("%s/v2/namespaces/%s/collections/orders", astraUrl, astraNamespace))
-            .addHeader("X-Cassandra-Token", astraToken)
-            .body(HttpEntities.create(mapper.toJson(order), ContentType.APPLICATION_JSON))
-            .execute();
+    Response response = Request.post(String.format(
+            "%s/v2/namespaces/%s/collections/orders", astraUrl, astraNamespace))
+        .addHeader("X-Cassandra-Token", astraToken)
+        .body(HttpEntities.create(mapper.toJson(order), ContentType.APPLICATION_JSON))
+        .execute();
 
     Type type = new TypeToken<Map<String, String>>() {
     }.getType();

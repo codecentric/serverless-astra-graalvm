@@ -15,7 +15,7 @@
     "allDeclaredFields": true
   },
   {
-    "name": "com.github.codecentric.AstraOrder",
+    "name": "com.github.codecentric.OrderDocument",
     "allPublicConstructors": true,
     "allDeclaredFields": true
   },

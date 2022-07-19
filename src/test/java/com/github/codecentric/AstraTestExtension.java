@@ -3,12 +3,12 @@ package com.github.codecentric;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.gson.Gson;
-import java.io.IOException;
 import java.net.URI;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.io.entity.HttpEntities;
+import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.testcontainers.containers.GenericContainer;
@@ -30,18 +30,24 @@ public class AstraTestExtension implements BeforeEachCallback {
 
   @Override
   public void beforeEach(ExtensionContext extensionContext) throws Exception {
-    astraUri = URI.create(String.format("http://%s:%s",
-        stargate.getContainerIpAddress(), stargate.getMappedPort(8082)));
+    astraUri =
+        new URIBuilder()
+            .setScheme("http")
+            .setHost(stargate.getContainerIpAddress())
+            .setPort(stargate.getMappedPort(8082))
+            .build();
     authToken = generateAuthToken();
     client = new AstraClient(astraUri, authToken, namespace);
     ensureNamespaceExists();
   }
 
-  public void ensureNamespaceExists() throws IOException {
-    Request.post(String.format("%s/v2/schemas/namespaces", astraUri))
-        .body(HttpEntities.create(
-            String.format("{\"name\":\"%s\"}", namespace),
-            ContentType.APPLICATION_JSON))
+  public void ensureNamespaceExists() throws Exception {
+    URI uri = new URIBuilder(astraUri).setPathSegments("v2", "schemas", "namespaces").build();
+
+    Request.post(uri)
+        .body(
+            HttpEntities.create(
+                String.format("{\"name\":\"%s\"}", namespace), ContentType.APPLICATION_JSON))
         .addHeader("X-Cassandra-Token", authToken)
         .execute();
   }
@@ -50,16 +56,24 @@ public class AstraTestExtension implements BeforeEachCallback {
     return client;
   }
 
-  public String generateAuthToken() throws IOException {
+  public String generateAuthToken() throws Exception {
+    URI uri =
+        new URIBuilder()
+            .setScheme("http")
+            .setHost(stargate.getContainerIpAddress())
+            .setPort(stargate.getMappedPort(8081))
+            .setPathSegments("v1", "auth")
+            .build();
+
     Response response =
-        Request.post(String.format("http://%s:%s/v1/auth",
-                stargate.getContainerIpAddress(), stargate.getMappedPort(8081)))
-            .body(HttpEntities.create(
-                "{\"username\":\"cassandra\", \"password\":\"cassandra\"}",
-                ContentType.APPLICATION_JSON))
+        Request.post(uri)
+            .body(
+                HttpEntities.create(
+                    "{\"username\":\"cassandra\", \"password\":\"cassandra\"}",
+                    ContentType.APPLICATION_JSON))
             .execute();
-    AuthToken authResult = mapper.fromJson(
-        response.returnContent().asString(UTF_8), AuthToken.class);
+    AuthToken authResult =
+        mapper.fromJson(response.returnContent().asString(UTF_8), AuthToken.class);
     return authResult.authToken;
   }
 }

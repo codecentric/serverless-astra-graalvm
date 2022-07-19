@@ -28,31 +28,46 @@ public class AstraClient {
   }
 
   public Optional<Order> getOrder(UUID orderId) {
+    URI uri;
     try {
-      URI uri = new URIBuilder(astraUrl)
-          .appendPathSegments("v2", "namespaces", astraNamespace,
-              "collections", "orders", orderId.toString())
-          .build();
-      Response response = Request.get(uri)
-          .addHeader("X-Cassandra-Token", astraToken)
-          .execute();
-      OrderDocument orderDoc = mapper.fromJson(
-          response.returnContent().asString(UTF_8), OrderDocument.class);
+      uri =
+          new URIBuilder(astraUrl)
+              .appendPathSegments(
+                  "v2", "namespaces", astraNamespace, "collections", "orders", orderId.toString())
+              .build();
+    } catch (URISyntaxException e) {
+      throw new RuntimeException("URI in getOrder is incorrect", e);
+    }
+
+    try {
+      Response response = Request.get(uri).addHeader("X-Cassandra-Token", astraToken).execute();
+      OrderDocument orderDoc =
+          mapper.fromJson(response.returnContent().asString(UTF_8), OrderDocument.class);
       Order resultOrder = orderDoc.getData();
       resultOrder.setOrderId(orderDoc.getDocumentId());
       return Optional.of(orderDoc.getData());
-    } catch (IOException | URISyntaxException e) {
+    } catch (IOException e) {
       e.printStackTrace();
       return Optional.empty();
     }
   }
 
   public Order saveOrder(Order order) throws IOException {
-    Response response = Request.post(String.format(
-            "%s/v2/namespaces/%s/collections/orders", astraUrl, astraNamespace))
-        .addHeader("X-Cassandra-Token", astraToken)
-        .body(HttpEntities.create(mapper.toJson(order), ContentType.APPLICATION_JSON))
-        .execute();
+    URI uri;
+    try {
+      uri =
+          new URIBuilder(astraUrl)
+              .appendPathSegments("v2", "namespaces", astraNamespace, "collections", "orders")
+              .build();
+    } catch (URISyntaxException e) {
+      throw new RuntimeException("URI in saveOrder is incorrect", e);
+    }
+
+    Response response =
+        Request.post(uri)
+            .addHeader("X-Cassandra-Token", astraToken)
+            .body(HttpEntities.create(mapper.toJson(order), ContentType.APPLICATION_JSON))
+            .execute();
 
     DocumentId documentId =
         mapper.fromJson(response.returnContent().asString(UTF_8), DocumentId.class);

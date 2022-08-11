@@ -6,6 +6,7 @@ import static org.apache.hc.core5.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.hc.core5.http.HttpStatus.SC_OK;
 
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.google.gson.Gson;
@@ -21,22 +22,24 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
 
   @Override
   public LambdaResponse handleRequest(APIGatewayV2HTTPEvent input, Context context) {
+    LambdaLogger logger = context.getLogger();
+
     String astraUrl = System.getenv("ASTRA_URL");
     String astraToken = System.getenv("ASTRA_TOKEN");
     String astraNamespace = System.getenv("ASTRA_NAMESPACE");
     AstraClient client = new AstraClient(URI.create(astraUrl), astraToken, astraNamespace);
 
     if (astraUrl.isBlank()) {
-      System.out.println("Astra url is NOT set.");
+      logger.log("Astra url is NOT set.");
     }
     if (astraToken.isBlank()) {
-      System.out.println("Astra token is NOT set.");
+      logger.log("Astra token is NOT set.");
     }
     if (astraNamespace.isBlank()) {
-      System.out.println("Astra namespace is NOT set.");
+      logger.log("Astra namespace is NOT set.");
     }
 
-    System.out.println("input = " + input + ", context = " + context);
+    logger.log("input = " + input + ", context = " + context);
 
     if (input.getRouteKey().startsWith("GET")) {
       String orderIdRaw = input.getPathParameters().get("orderId");
@@ -52,13 +55,13 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
       try {
         byte[] decodedRequest = base64DecodeApiGatewayEvent(input);
         requestOrder = mapper.fromJson(new String(decodedRequest), Order.class);
-        System.out.println("Received order: " + requestOrder);
+        logger.log("Received order: " + requestOrder);
         Order savedOrder = client.saveOrder(requestOrder);
         LambdaResponse lambdaResponse = new LambdaResponse(mapper.toJson(savedOrder), SC_OK);
-        System.out.println("Lambda response: " + lambdaResponse);
+        logger.log("Lambda response: " + lambdaResponse);
         return lambdaResponse;
       } catch (IOException e) {
-        System.out.println(
+        logger.log(
             "Could not save input '"
                 + input
                 + "' as order '"

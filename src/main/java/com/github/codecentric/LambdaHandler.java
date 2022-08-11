@@ -10,7 +10,6 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.google.gson.Gson;
-import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;
@@ -60,7 +59,7 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
         LambdaResponse lambdaResponse = new LambdaResponse(mapper.toJson(savedOrder), SC_OK);
         logger.log("Lambda response: " + lambdaResponse);
         return lambdaResponse;
-      } catch (IOException e) {
+      } catch (Exception e) {
         logger.log(
             "Could not save input '"
                 + input

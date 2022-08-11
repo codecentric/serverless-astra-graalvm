@@ -30,12 +30,11 @@ public class AstraTestExtension implements BeforeEachCallback {
 
   @Override
   public void beforeEach(ExtensionContext extensionContext) throws Exception {
-    astraUri =
-        new URIBuilder()
-            .setScheme("http")
-            .setHost(stargate.getContainerIpAddress())
-            .setPort(stargate.getMappedPort(8082))
-            .build();
+    astraUri = new URIBuilder()
+        .setScheme("http")
+        .setHost(stargate.getContainerIpAddress())
+        .setPort(stargate.getMappedPort(8082))
+        .build();
     authToken = generateAuthToken();
     client = new AstraClient(astraUri, authToken, namespace);
     ensureNamespaceExists();
@@ -57,21 +56,19 @@ public class AstraTestExtension implements BeforeEachCallback {
   }
 
   public String generateAuthToken() throws Exception {
-    URI uri =
-        new URIBuilder()
-            .setScheme("http")
-            .setHost(stargate.getContainerIpAddress())
-            .setPort(stargate.getMappedPort(8081))
-            .setPathSegments("v1", "auth")
-            .build();
+    URI uri = new URIBuilder()
+        .setScheme("http")
+        .setHost(stargate.getContainerIpAddress())
+        .setPort(stargate.getMappedPort(8081))
+        .setPathSegments("v1", "auth")
+        .build();
 
-    Response response =
-        Request.post(uri)
-            .body(
-                HttpEntities.create(
-                    "{\"username\":\"cassandra\", \"password\":\"cassandra\"}",
-                    ContentType.APPLICATION_JSON))
-            .execute();
+    Response response = Request.post(uri)
+        .body(
+            HttpEntities.create(
+                "{\"username\":\"cassandra\", \"password\":\"cassandra\"}",
+                ContentType.APPLICATION_JSON))
+        .execute();
     AuthToken authResult =
         mapper.fromJson(response.returnContent().asString(UTF_8), AuthToken.class);
     return authResult.authToken;

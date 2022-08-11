@@ -55,10 +55,9 @@ public class AstraClient {
   public Order saveOrder(Order order) throws IOException {
     URI uri;
     try {
-      uri =
-          new URIBuilder(astraUrl)
-              .appendPathSegments("v2", "namespaces", astraNamespace, "collections", "orders")
-              .build();
+      uri = new URIBuilder(astraUrl)
+          .appendPathSegments("v2", "namespaces", astraNamespace, "collections", "orders")
+          .build();
     } catch (URISyntaxException e) {
       throw new RuntimeException("URI in saveOrder is incorrect", e);
     }

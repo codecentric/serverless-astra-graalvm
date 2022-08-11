@@ -4,17 +4,29 @@ import java.util.Objects;
 
 public class LambdaResponse {
 
-  private Order order;
+  private String body;
+  private int statusCode;
+  private final boolean isBase64Encoded = false;
 
-  public LambdaResponse() {}
+  public LambdaResponse() {
+  }
 
-  public LambdaResponse(Order order) {
-    this.order = order;
+  public LambdaResponse(int statusCode) {
+    this.statusCode = statusCode;
+  }
+
+  public LambdaResponse(String body, int statusCode) {
+    this.body = body;
+    this.statusCode = statusCode;
   }
 
   @Override
   public String toString() {
-    return "LambdaResponse{" + "order=" + order + '}';
+    return "LambdaResponse{" +
+        "body='" + body + '\'' +
+        ", statusCode=" + statusCode +
+        ", isBase64Encoded=" + isBase64Encoded +
+        '}';
   }
 
   @Override
@@ -26,11 +38,12 @@ public class LambdaResponse {
       return false;
     }
     LambdaResponse that = (LambdaResponse) o;
-    return Objects.equals(order, that.order);
+    return statusCode == that.statusCode && isBase64Encoded == that.isBase64Encoded
+        && Objects.equals(body, that.body);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(order);
+    return Objects.hash(body, statusCode, isBase64Encoded);
   }
 }

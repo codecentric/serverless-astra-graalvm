@@ -1,6 +1,9 @@
 package com.github.codecentric;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.apache.hc.core5.http.HttpStatus.SC_BAD_REQUEST;
+import static org.apache.hc.core5.http.HttpStatus.SC_NOT_FOUND;
+import static org.apache.hc.core5.http.HttpStatus.SC_OK;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -23,9 +26,15 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
     String astraNamespace = System.getenv("ASTRA_NAMESPACE");
     AstraClient client = new AstraClient(URI.create(astraUrl), astraToken, astraNamespace);
 
-    if (astraUrl.isBlank()) System.out.println("Astra url is NOT set.");
-    if (astraToken.isBlank()) System.out.println("Astra token is NOT set.");
-    if (astraNamespace.isBlank()) System.out.println("Astra namespace is NOT set.");
+    if (astraUrl.isBlank()) {
+      System.out.println("Astra url is NOT set.");
+    }
+    if (astraToken.isBlank()) {
+      System.out.println("Astra token is NOT set.");
+    }
+    if (astraNamespace.isBlank()) {
+      System.out.println("Astra namespace is NOT set.");
+    }
 
     System.out.println("input = " + input + ", context = " + context);
 
@@ -34,9 +43,9 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
       UUID orderId = UUID.fromString(orderIdRaw);
       Optional<Order> order = client.getOrder(orderId);
       if (order.isEmpty()) {
-        return new LambdaResponse();
+        return new LambdaResponse(SC_NOT_FOUND);
       }
-      return new LambdaResponse(order.get());
+      return new LambdaResponse(mapper.toJson(order.get()), SC_OK);
 
     } else {
       Order requestOrder = null;
@@ -45,11 +54,11 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
         requestOrder = mapper.fromJson(new String(decodedRequest), Order.class);
         System.out.println("Received order: " + requestOrder);
         Order savedOrder = client.saveOrder(requestOrder);
-        LambdaResponse lambdaResponse = new LambdaResponse(savedOrder);
+        LambdaResponse lambdaResponse = new LambdaResponse(mapper.toJson(savedOrder), SC_OK);
         System.out.println("Lambda response: " + lambdaResponse);
         return lambdaResponse;
       } catch (IOException e) {
-        throw new RuntimeException(
+        System.out.println(
             "Could not save input '"
                 + input
                 + "' as order '"
@@ -57,8 +66,13 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
                 + "' at "
                 + astraUrl
                 + " with namespace "
-                + astraNamespace,
-            e);
+                + astraNamespace
+                + "\nException was: "
+                + e.getLocalizedMessage()
+        );
+        return new LambdaResponse(
+            "{ \"message\": \"Order could not be saved.\" }",
+            SC_BAD_REQUEST);
       }
     }
   }

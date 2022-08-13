@@ -54,7 +54,7 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
       try {
         byte[] decodedRequest = base64DecodeApiGatewayEvent(input);
         requestOrder = mapper.fromJson(new String(decodedRequest), Order.class);
-        logger.log("Received order: " + requestOrder);
+        logger.log("Saving received order: " + requestOrder);
         Order savedOrder = client.saveOrder(requestOrder);
         LambdaResponse lambdaResponse = new LambdaResponse(mapper.toJson(savedOrder), SC_OK);
         logger.log("Lambda response: " + lambdaResponse);

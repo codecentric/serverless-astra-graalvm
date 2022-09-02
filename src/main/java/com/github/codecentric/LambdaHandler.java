@@ -57,7 +57,7 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
         logger.log("Saving received order: " + requestOrder);
         Order savedOrder = client.saveOrder(requestOrder);
         LambdaResponse lambdaResponse = new LambdaResponse(mapper.toJson(savedOrder), SC_OK);
-        logger.log("Lambda response: " + lambdaResponse);
+        logger.log("Successfully saved order with id: " + savedOrder.getOrderId());
         return lambdaResponse;
       } catch (Exception e) {
         logger.log(
@@ -68,10 +68,8 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
                 + "' at "
                 + astraUrl
                 + " with namespace "
-                + astraNamespace
-                + "\nException was: "
-                + e.getLocalizedMessage()
-        );
+                + astraNamespace);
+        logger.log("Exception was: " + e.getLocalizedMessage());
         return new LambdaResponse(
             "{ \"message\": \"Order could not be saved.\" }",
             SC_BAD_REQUEST);

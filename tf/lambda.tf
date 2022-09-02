@@ -20,4 +20,6 @@ module "lambda_function" {
     ASTRA_TOKEN = var.astra_db_client_token
     ASTRA_NAMESPACE = astra_database.main.keyspace
   }
+
+  cloudwatch_logs_retention_in_days = 90
 }

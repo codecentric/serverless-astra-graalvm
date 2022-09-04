@@ -49,7 +49,7 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
       }
       return new LambdaResponse(mapper.toJson(order.get()), SC_OK);
 
-    } else {
+    } else if (input.getRouteKey().startsWith("POST")) {
       Order requestOrder = null;
       try {
         byte[] decodedRequest = base64DecodeApiGatewayEvent(input);
@@ -74,6 +74,10 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
             "{ \"message\": \"Order could not be saved.\" }",
             SC_BAD_REQUEST);
       }
+    } else {
+      return new LambdaResponse(
+              "{ \"message\": \"HTTP method is not supported.\" }",
+              SC_BAD_REQUEST);
     }
   }
 

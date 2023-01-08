@@ -27,6 +27,13 @@ public class AstraClient {
     this.astraNamespace = astraNamespace;
   }
 
+  public static AstraClient newClientFromEnv() {
+    String astraUrl = System.getenv("ASTRA_URL");
+    String astraToken = System.getenv("ASTRA_TOKEN");
+    String astraNamespace = System.getenv("ASTRA_NAMESPACE");
+    return new AstraClient(URI.create(astraUrl), astraToken, astraNamespace);
+  }
+
   public Optional<Order> getOrder(UUID orderId) {
     URI uri;
     try {

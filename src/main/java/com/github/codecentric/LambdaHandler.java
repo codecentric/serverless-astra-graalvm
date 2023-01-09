@@ -10,6 +10,7 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.google.gson.Gson;
+import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;
 import org.apache.commons.codec.binary.Base64;
@@ -18,7 +19,14 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
 
   private static final Gson mapper = new Gson();
 
-  private static final AstraClient client = AstraClient.newClientFromEnv();
+  private static final AstraClient client = newAstraClientFromEnv();
+
+  private static AstraClient newAstraClientFromEnv() {
+    String astraUrl = System.getenv("ASTRA_URL");
+    String astraToken = System.getenv("ASTRA_TOKEN");
+    String astraNamespace = System.getenv("ASTRA_NAMESPACE");
+    return new AstraClient(URI.create(astraUrl), astraToken, astraNamespace);
+  }
 
   @Override
   public LambdaResponse handleRequest(APIGatewayV2HTTPEvent input, Context context) {

@@ -19,7 +19,7 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
 
   private static final Gson mapper = new Gson();
 
-  private static final AstraClient client = newAstraClientFromEnv();
+  private static final AstraClient astraClient = newAstraClientFromEnv();
 
   private static AstraClient newAstraClientFromEnv() {
     String astraUrl = System.getenv("ASTRA_URL");
@@ -37,7 +37,7 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
     if (input.getRouteKey().startsWith("GET")) {
       String orderIdRaw = input.getPathParameters().get("orderId");
       UUID orderId = UUID.fromString(orderIdRaw);
-      Optional<Order> order = client.getOrder(orderId);
+      Optional<Order> order = astraClient.getOrder(orderId);
       if (order.isEmpty()) {
         return new LambdaResponse(SC_NOT_FOUND);
       }
@@ -49,7 +49,7 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
         byte[] decodedRequest = base64DecodeApiGatewayEvent(input);
         requestOrder = mapper.fromJson(new String(decodedRequest), Order.class);
         logger.log("Saving received order: " + requestOrder);
-        Order savedOrder = client.saveOrder(requestOrder);
+        Order savedOrder = astraClient.saveOrder(requestOrder);
         LambdaResponse lambdaResponse = new LambdaResponse(mapper.toJson(savedOrder), SC_OK);
         logger.log("Successfully saved order with id: " + savedOrder.getOrderId());
         return lambdaResponse;

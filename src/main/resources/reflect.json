@@ -10,6 +10,11 @@
     "allDeclaredFields": true
   },
   {
+    "name": "com.github.codecentric.DocumentId",
+    "allPublicConstructors": true,
+    "allDeclaredFields": true
+  },
+  {
     "name": "com.github.codecentric.LambdaResponse",
     "allPublicConstructors": true,
     "allDeclaredFields": true

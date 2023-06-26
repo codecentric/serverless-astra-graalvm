@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;
-import org.apache.commons.codec.binary.Base64;
+import java.util.Base64;
 
 public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, LambdaResponse> {
 
@@ -70,7 +70,7 @@ public class LambdaHandler implements RequestHandler<APIGatewayV2HTTPEvent, Lamb
   private byte[] base64DecodeApiGatewayEvent(APIGatewayV2HTTPEvent input) {
     byte[] decodedRequest;
     if (input.getIsBase64Encoded()) {
-      decodedRequest = Base64.decodeBase64(input.getBody());
+      decodedRequest = Base64.getDecoder().decode(input.getBody());
     } else {
       String body = input.getBody();
       decodedRequest = body != null ? body.getBytes(UTF_8) : null;

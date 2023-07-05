@@ -18,10 +18,9 @@ jobs:
     - uses: actions/checkout@v2
     - uses: graalvm/setup-graalvm@v1
       with:
-        java-version: '11'
+        java-version: '17'
         distribution: 'graalvm'
         version: '22.3.2'
-        native-image: true
         native-image-job-reports: true
         github-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Build with Maven

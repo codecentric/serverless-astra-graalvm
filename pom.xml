@@ -15,7 +15,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
-    <graalvm.version>21.1.0</graalvm.version>
+    <graalvm.version>22.3.2</graalvm.version>
     <awssdk1.version>1.2.2</awssdk1.version>
     <lambda-events.version>3.11.2</lambda-events.version>
     <junit.version>5.9.3</junit.version>
@@ -141,7 +141,7 @@
       <plugin>
         <groupId>org.graalvm.nativeimage</groupId>
         <artifactId>native-image-maven-plugin</artifactId>
-        <version>${graalvm.version}</version>
+        <version>21.2.0</version>
         <executions>
           <execution>
             <goals>

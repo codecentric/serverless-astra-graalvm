@@ -13,8 +13,8 @@
   <url>https://github.com/codecentric/serverless-astra-graalvm</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
     <graalvm.version>22.3.2</graalvm.version>
     <awssdk1.version>1.2.2</awssdk1.version>
     <lambda-events.version>3.11.2</lambda-events.version>

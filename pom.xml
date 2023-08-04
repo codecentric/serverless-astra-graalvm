@@ -158,7 +158,6 @@
             <buildArg>--no-fallback</buildArg>
             <buildArg>--enable-url-protocols=http</buildArg>
             <buildArg>-H:ReflectionConfigurationFiles=../src/main/resources/reflect.json</buildArg>
-            <buildArg>--no-server</buildArg>
           </buildArgs>
         </configuration>
       </plugin>

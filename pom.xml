@@ -156,7 +156,7 @@
           <mainClass>com.formkiq.lambda.runtime.graalvm.LambdaRuntime</mainClass>
           <buildArgs>
             <buildArg>--no-fallback</buildArg>
-            <buildArg>--enable-url-protocols=http</buildArg>
+            <buildArg>--enable-http</buildArg>
             <buildArg>-H:ReflectionConfigurationFiles=../src/main/resources/reflect.json</buildArg>
           </buildArgs>
         </configuration>
